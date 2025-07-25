@@ -5,13 +5,14 @@ import (
 )
 
 type ProducerConfig struct {
-    BootstrapServers string
-    Topic            string
+	BootstrapServers string
+	Topic            string
 }
 
 // NewProducer membuat instance produsen Kafka baru.
-func NewProducer(bootstrapServers string) (*kafka.Producer, error) {
-	return kafka.NewProducer(&kafka.ConfigMap{"bootstrap.servers": bootstrapServers})
+// Konfigurasi diambil dari ProducerConfig untuk memudahkan injeksi dependensi.
+func NewProducer(cfg ProducerConfig) (*kafka.Producer, error) {
+	return kafka.NewProducer(&kafka.ConfigMap{"bootstrap.servers": cfg.BootstrapServers})
 }
 
 // NewConsumer membuat instance konsumen Kafka baru.
