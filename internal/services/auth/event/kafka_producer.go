@@ -6,23 +6,26 @@ import (
 	"log/slog"
 	"time"
 
-	"github.com/confluentinc/confluent-kafka-go/v2/kafka"
+	ckafka "github.com/confluentinc/confluent-kafka-go/v2/kafka"
+	"github.com/dpalhz/microservice-exp-with-go/internal/pkg/kafka"
 	"github.com/dpalhz/microservice-exp-with-go/internal/services/auth/domain"
 	"github.com/google/uuid"
 )
 
 type KafkaEventProducer struct {
-	producer *kafka.Producer
+	producer *ckafka.Producer
 	topic    string
 	log      *slog.Logger
 }
 
-func NewKafkaEventProducer(p *kafka.Producer, topic string, log *slog.Logger) *KafkaEventProducer {
-	return &KafkaEventProducer{producer: p, topic: topic, log: log}
+// NewKafkaEventProducer membuat producer event berbasis Kafka.
+// Konfigurasi topik diambil dari kafka.ProducerConfig sehingga mudah di-wire.
+func NewKafkaEventProducer(p *ckafka.Producer, cfg kafka.ProducerConfig, log *slog.Logger) *KafkaEventProducer {
+	return &KafkaEventProducer{producer: p, topic: cfg.Topic, log: log}
 }
 
 type UserRegisteredEvent struct {
-	UserID       uuid.UUID    `json:"user_id"`
+	UserID       uuid.UUID `json:"user_id"`
 	Email        string    `json:"email"`
 	FullName     string    `json:"full_name"`
 	RegisteredAt time.Time `json:"registered_at"`
@@ -37,12 +40,12 @@ func (p *KafkaEventProducer) ProduceUserRegistered(ctx context.Context, user *do
 	}
 
 	payload, err := json.Marshal(event)
-	if err!= nil {
+	if err != nil {
 		return err
 	}
 
-	return p.producer.Produce(&kafka.Message{
-		TopicPartition: kafka.TopicPartition{Topic: &p.topic, Partition: int32(kafka.PartitionAny)},
+	return p.producer.Produce(&ckafka.Message{
+		TopicPartition: ckafka.TopicPartition{Topic: &p.topic, Partition: int32(ckafka.PartitionAny)},
 		Value:          payload,
 	}, nil)
 }
