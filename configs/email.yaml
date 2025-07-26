@@ -1,0 +1,10 @@
+kafka:
+  brokers: "kafka:9092"
+  topic: "user-events"
+
+db:
+  user: "admin"
+  password: "secret"
+  host: "postgres"
+  port: "5432"
+  name: "microservices_db"

@@ -25,12 +25,14 @@ func InitializeApp(log *slog.Logger) (*app.App, func(), error) {
 		wire.Bind(new(usecase.EventProducer), new(*event.KafkaEventProducer)),
 		wire.Bind(new(usecase.TokenGenerator), new(*token.JWTGenerator)),
 		wire.Bind(new(usecase.SessionStore), new(*session.RedisSessionStore)),
+		wire.Bind(new(usecase.VerificationRepository), new(*repository.PostgresVerificationRepository)),
 
 		// ✅ PROVIDER CONSTRUCTORS
 		app.New,
 		handler.NewFiberHandler,
 		usecase.NewUserUsecase,
 		repository.NewPostgresUserRepository,
+		repository.NewPostgresVerificationRepository,
 		event.NewKafkaEventProducer,
 		token.NewJWTGenerator,
 		session.NewRedisSessionStore,
