@@ -2,6 +2,8 @@ package app
 
 import (
 	"fmt"
+	"log/slog"
+
 	"github.com/dpalhz/microservice-exp-with-go/internal/pkg/database"
 	"github.com/dpalhz/microservice-exp-with-go/internal/pkg/kafka"
 	"github.com/dpalhz/microservice-exp-with-go/internal/pkg/redisdb"
@@ -13,7 +15,6 @@ import (
 	"github.com/redis/go-redis/v9"
 	"github.com/spf13/viper"
 	"gorm.io/gorm"
-	"log/slog"
 )
 
 type App struct {

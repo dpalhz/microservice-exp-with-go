@@ -9,13 +9,14 @@ type ProducerConfig struct {
 	Topic            string
 }
 
-// NewProducer membuat instance produsen Kafka baru.
-// Konfigurasi diambil dari ProducerConfig untuk memudahkan injeksi dependensi.
+// NewProducer creates a new Kafka producer instance.
+// It initializes the producer with the provided configuration.
 func NewProducer(cfg ProducerConfig) (*kafka.Producer, error) {
 	return kafka.NewProducer(&kafka.ConfigMap{"bootstrap.servers": cfg.BootstrapServers})
 }
 
-// NewConsumer membuat instance konsumen Kafka baru.
+// NewConsumer creates a new Kafka consumer instance.
+// It initializes the consumer with the provided configuration.	
 func NewConsumer(bootstrapServers, groupID string) (*kafka.Consumer, error) {
 	return kafka.NewConsumer(&kafka.ConfigMap{
 		"bootstrap.servers": bootstrapServers,

@@ -2,6 +2,7 @@ package handler
 
 import (
 	"log/slog"
+	"net/http"
 
 	"github.com/dpalhz/microservice-exp-with-go/internal/pkg/apiresponse"
 	"github.com/dpalhz/microservice-exp-with-go/internal/services/auth/dto"

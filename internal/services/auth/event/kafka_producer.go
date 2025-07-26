@@ -18,8 +18,8 @@ type KafkaEventProducer struct {
 	log      *slog.Logger
 }
 
-// NewKafkaEventProducer membuat producer event berbasis Kafka.
-// Konfigurasi topik diambil dari kafka.ProducerConfig sehingga mudah di-wire.
+// NewKafkaEventProducer creates a new Kafka event producer.	
+// It initializes the producer with the provided Kafka configuration and logger.
 func NewKafkaEventProducer(p *ckafka.Producer, cfg kafka.ProducerConfig, log *slog.Logger) *KafkaEventProducer {
 	return &KafkaEventProducer{producer: p, topic: cfg.Topic, log: log}
 }

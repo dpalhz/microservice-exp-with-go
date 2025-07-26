@@ -27,13 +27,13 @@ func (uc *UserUsecase) Register(ctx context.Context, fullName, email, password s
 	}
 
 	if err := uc.userRepo.Create(ctx, user); err != nil {
-		uc.log.Error("Gagal membuat pengguna di repo", slog.String("error", err.Error()))
+		uc.log.Error("failed to create user", slog.String("error", err.Error()))
 		return nil, err
 	}
 
 	if err := uc.producer.ProduceUserRegistered(ctx, user); err != nil {
-		// Log error tapi jangan gagalkan registrasi
-		uc.log.Error("Gagal memproduksi event UserRegistered", slog.String("error", err.Error()))
+		// Log the error but do not return it, as user creation should not fail due to event production issues.	
+		uc.log.Error("failed to produce user registered event", slog.String("error", err.Error()))
 	}
 
 	return user, nil

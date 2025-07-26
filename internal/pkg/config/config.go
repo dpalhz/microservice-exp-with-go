@@ -4,7 +4,7 @@ import (
 	"github.com/spf13/viper"
 )
 
-// LoadConfig memuat konfigurasi dari file dan variabel lingkungan.
+// LoadConfig loads the configuration from the specified path and config name.
 func LoadConfig(path string, configName string) error {
 	viper.AddConfigPath(path)
 	viper.SetConfigName(configName)
