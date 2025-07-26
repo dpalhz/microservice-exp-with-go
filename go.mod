@@ -4,9 +4,10 @@ go 1.24.5
 
 require (
 	github.com/confluentinc/confluent-kafka-go/v2 v2.11.0
-	github.com/gofiber/fiber/v2 v2.52.9
-	github.com/golang-jwt/jwt/v5 v5.2.1
-	github.com/google/uuid v1.6.0
+        github.com/gofiber/fiber/v2 v2.52.9
+        github.com/golang-jwt/jwt/v5 v5.2.1
+        github.com/redis/go-redis/v9 v9.2.3
+        github.com/google/uuid v1.6.0
 	github.com/google/wire v0.6.0
 	github.com/spf13/viper v1.20.1
 	golang.org/x/crypto v0.32.0

@@ -2,8 +2,9 @@ package handler
 
 import (
 	"log/slog"
-	"net/http"
 
+	"github.com/dpalhz/microservice-exp-with-go/internal/pkg/apiresponse"
+	"github.com/dpalhz/microservice-exp-with-go/internal/services/auth/dto"
 	"github.com/dpalhz/microservice-exp-with-go/internal/services/auth/usecase"
 
 	"github.com/gofiber/fiber/v2"
@@ -24,44 +25,32 @@ func (h *FiberHandler) RegisterRoutes(app *fiber.App) {
 	api.Post("/login", h.Login)
 }
 
-type RegisterRequest struct {
-	FullName string `json:"full_name"`
-	Email    string `json:"email"`
-	Password string `json:"password"`
-}
-
 func (h *FiberHandler) Register(c *fiber.Ctx) error {
-	var req RegisterRequest
-	if err := c.BodyParser(&req); err!= nil {
-		return c.Status(http.StatusBadRequest).JSON(fiber.Map{"error": "Cannot parse JSON"})
+	var req dto.RegisterRequest
+	if err := c.BodyParser(&req); err != nil {
+		return c.Status(http.StatusBadRequest).JSON(apiresponse.Error("cannot parse json"))
 	}
 
 	user, err := h.uc.Register(c.Context(), req.FullName, req.Email, req.Password)
-	if err!= nil {
-		return c.Status(http.StatusInternalServerError).JSON(fiber.Map{"error": "Could not register user"})
+	if err != nil {
+		return c.Status(http.StatusInternalServerError).JSON(apiresponse.Error("could not register user"))
 	}
 
-	return c.Status(http.StatusCreated).JSON(fiber.Map{"id": user.ID, "email": user.Email})
-}
-
-type LoginRequest struct {
-	Email    string `json:"email"`
-	Password string `json:"password"`
+	resp := dto.RegisterResponse{ID: user.ID, Email: user.Email}
+	return c.Status(http.StatusCreated).JSON(apiresponse.Success(resp))
 }
 
 func (h *FiberHandler) Login(c *fiber.Ctx) error {
-	var req LoginRequest
-	if err := c.BodyParser(&req); err!= nil {
-		return c.Status(http.StatusBadRequest).JSON(fiber.Map{"error": "Cannot parse JSON"})
+	var req dto.LoginRequest
+	if err := c.BodyParser(&req); err != nil {
+		return c.Status(http.StatusBadRequest).JSON(apiresponse.Error("cannot parse json"))
 	}
 
 	accessToken, refreshToken, err := h.uc.Login(c.Context(), req.Email, req.Password)
-	if err!= nil {
-		return c.Status(http.StatusUnauthorized).JSON(fiber.Map{"error": "Invalid credentials"})
+	if err != nil {
+		return c.Status(http.StatusUnauthorized).JSON(apiresponse.Error("invalid credentials"))
 	}
 
-	return c.JSON(fiber.Map{
-		"access_token":  accessToken,
-		"refresh_token": refreshToken,
-	})
+	resp := dto.LoginResponse{AccessToken: accessToken, RefreshToken: refreshToken}
+	return c.JSON(apiresponse.Success(resp))
 }

@@ -19,3 +19,8 @@ type EventProducer interface {
 type TokenGenerator interface {
 	GenerateTokens(userID uuid.UUID) (string, string, error)
 }
+
+type SessionStore interface {
+	Store(ctx context.Context, token string, userID uuid.UUID) error
+	GetUserID(ctx context.Context, token string) (uuid.UUID, error)
+}
