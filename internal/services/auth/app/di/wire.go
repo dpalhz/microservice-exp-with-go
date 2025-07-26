@@ -12,6 +12,7 @@ import (
 	"github.com/dpalhz/microservice-exp-with-go/internal/services/auth/event"
 	"github.com/dpalhz/microservice-exp-with-go/internal/services/auth/handler"
 	"github.com/dpalhz/microservice-exp-with-go/internal/services/auth/repository"
+	"github.com/dpalhz/microservice-exp-with-go/internal/services/auth/session"
 	"github.com/dpalhz/microservice-exp-with-go/internal/services/auth/token"
 	"github.com/dpalhz/microservice-exp-with-go/internal/services/auth/usecase"
 	"github.com/google/wire"
@@ -23,6 +24,7 @@ func InitializeApp(log *slog.Logger) (*app.App, func(), error) {
 		wire.Bind(new(usecase.UserRepository), new(*repository.PostgresUserRepository)),
 		wire.Bind(new(usecase.EventProducer), new(*event.KafkaEventProducer)),
 		wire.Bind(new(usecase.TokenGenerator), new(*token.JWTGenerator)),
+		wire.Bind(new(usecase.SessionStore), new(*session.RedisSessionStore)),
 
 		// ✅ PROVIDER CONSTRUCTORS
 		app.New,
@@ -31,11 +33,14 @@ func InitializeApp(log *slog.Logger) (*app.App, func(), error) {
 		repository.NewPostgresUserRepository,
 		event.NewKafkaEventProducer,
 		token.NewJWTGenerator,
+		session.NewRedisSessionStore,
+		app.ProvideRedisClient,
 		database.NewPostgresDB,
 		kafka.NewProducer,
 		app.ProvideDBConfig,
 		app.ProvideKafkaConfig,
 		app.ProvideJWTConfig,
+		app.ProvideRedisConfig,
 		app.ProvideServerConfig,
 	)
 	return &app.App{}, nil, nil

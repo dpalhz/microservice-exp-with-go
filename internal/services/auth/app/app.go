@@ -4,11 +4,13 @@ import (
 	"fmt"
 	"github.com/dpalhz/microservice-exp-with-go/internal/pkg/database"
 	"github.com/dpalhz/microservice-exp-with-go/internal/pkg/kafka"
+	"github.com/dpalhz/microservice-exp-with-go/internal/pkg/redisdb"
 	"github.com/dpalhz/microservice-exp-with-go/internal/services/auth/domain"
 	"github.com/dpalhz/microservice-exp-with-go/internal/services/auth/handler"
 	"github.com/dpalhz/microservice-exp-with-go/internal/services/auth/token"
 	"github.com/gofiber/fiber/v2"
 	"github.com/gofiber/fiber/v2/middleware/cors"
+	"github.com/redis/go-redis/v9"
 	"github.com/spf13/viper"
 	"gorm.io/gorm"
 	"log/slog"
@@ -74,4 +76,16 @@ func ProvideJWTConfig() token.JWTConfig {
 		PrivateKeyPath: viper.GetString("jwt.private_key_path"),
 		PublicKeyPath:  viper.GetString("jwt.public_key_path"),
 	}
+}
+
+func ProvideRedisConfig() redisdb.Config {
+	return redisdb.Config{
+		Addr:     viper.GetString("redis.addr"),
+		Password: viper.GetString("redis.password"),
+		DB:       viper.GetInt("redis.db"),
+	}
+}
+
+func ProvideRedisClient(cfg redisdb.Config) *redis.Client {
+	return redisdb.NewClient(cfg)
 }
