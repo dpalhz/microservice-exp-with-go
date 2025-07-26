@@ -28,8 +28,8 @@ func New(h *handler.FiberHandler, db *gorm.DB, log *slog.Logger, cfg ServerConfi
 	server.Use(cors.New())
 	h.RegisterRoutes(server)
 
-	// Migrasi otomatis domain User
-	db.AutoMigrate(&domain.User{})
+	// Migrasi otomatis domain User dan VerificationCode
+	db.AutoMigrate(&domain.User{}, &domain.VerificationCode{})
 
 	return &App{
 		server: server,
