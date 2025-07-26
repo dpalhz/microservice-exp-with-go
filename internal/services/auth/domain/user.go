@@ -10,17 +10,19 @@ import (
 )
 
 type User struct {
-	ID        uuid.UUID `gorm:"type:uuid;primaryKey"`
-	FullName  string    `gorm:"not null"`
-	Email     string    `gorm:"uniqueIndex;not null"`
-	Password  string    `gorm:"not null"`
-	CreatedAt time.Time
-	UpdatedAt time.Time
+	ID         uuid.UUID `gorm:"type:uuid;primaryKey"`
+	FullName   string    `gorm:"not null"`
+	Email      string    `gorm:"uniqueIndex;not null"`
+	Password   string    `gorm:"not null"`
+	MFAEnabled bool
+	CreatedAt  time.Time
+	UpdatedAt  time.Time
 }
 
 var (
-	ErrInvalidCredentials = errors.New("invalid credentials")
-	ErrUserNotFound       = errors.New("user not found")
+	ErrInvalidCredentials   = errors.New("invalid credentials")
+	ErrUserNotFound         = errors.New("user not found")
+	ErrVerificationRequired = errors.New("verification required")
 )
 
 func (u *User) HashPassword() error {

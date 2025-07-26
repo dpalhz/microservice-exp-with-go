@@ -25,10 +25,17 @@ func NewKafkaEventProducer(p *ckafka.Producer, cfg kafka.ProducerConfig, log *sl
 }
 
 type UserRegisteredEvent struct {
-	UserID       uuid.UUID `json:"user_id"`
-	Email        string    `json:"email"`
-	FullName     string    `json:"full_name"`
-	RegisteredAt time.Time `json:"registered_at"`
+        UserID       uuid.UUID `json:"user_id"`
+        Email        string    `json:"email"`
+        FullName     string    `json:"full_name"`
+        RegisteredAt time.Time `json:"registered_at"`
+}
+
+type EmailVerificationEvent struct {
+        UserID uuid.UUID `json:"user_id"`
+        Email  string    `json:"email"`
+        Code   string    `json:"code"`
+        Purpose domain.VerificationPurpose `json:"purpose"`
 }
 
 func (p *KafkaEventProducer) ProduceUserRegistered(ctx context.Context, user *domain.User) error {
@@ -48,4 +55,16 @@ func (p *KafkaEventProducer) ProduceUserRegistered(ctx context.Context, user *do
 		TopicPartition: ckafka.TopicPartition{Topic: &p.topic, Partition: int32(ckafka.PartitionAny)},
 		Value:          payload,
 	}, nil)
+}
+
+func (p *KafkaEventProducer) ProduceEmailVerification(ctx context.Context, email string, userID uuid.UUID, code string, purpose domain.VerificationPurpose) error {
+        event := EmailVerificationEvent{UserID: userID, Email: email, Code: code, Purpose: purpose}
+        payload, err := json.Marshal(event)
+        if err != nil {
+                return err
+        }
+        return p.producer.Produce(&ckafka.Message{
+                TopicPartition: ckafka.TopicPartition{Topic: &p.topic, Partition: int32(ckafka.PartitionAny)},
+                Value:          payload,
+        }, nil)
 }
