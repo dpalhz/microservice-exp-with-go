@@ -14,6 +14,12 @@ type UserRepository interface {
 	Update(ctx context.Context, user *domain.User) error
 }
 
+type VerificationRepository interface {
+	Create(ctx context.Context, v *domain.VerificationCode) error
+	FindValid(ctx context.Context, userID uuid.UUID, purpose domain.VerificationPurpose, code string) (*domain.VerificationCode, error)
+	Update(ctx context.Context, v *domain.VerificationCode) error
+}
+
 type EventProducer interface {
 	ProduceUserRegistered(ctx context.Context, user *domain.User) error
 	ProduceEmailVerification(ctx context.Context, email string, userID uuid.UUID, code string, purpose domain.VerificationPurpose) error
@@ -28,8 +34,4 @@ type SessionStore interface {
 	GetUserID(ctx context.Context, token string) (uuid.UUID, error)
 }
 
-type VerificationRepository interface {
-	Create(ctx context.Context, v *domain.VerificationCode) error
-	FindValid(ctx context.Context, userID uuid.UUID, purpose domain.VerificationPurpose, code string) (*domain.VerificationCode, error)
-	Update(ctx context.Context, v *domain.VerificationCode) error
-}
+

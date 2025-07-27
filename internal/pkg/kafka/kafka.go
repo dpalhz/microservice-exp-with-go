@@ -9,6 +9,11 @@ type ProducerConfig struct {
 	Topic            string
 }
 
+type ConsumerConfig struct {
+	BootstrapServers string
+	GroupID          string
+}
+
 // NewProducer creates a new Kafka producer instance.
 // It initializes the producer with the provided configuration.
 func NewProducer(cfg ProducerConfig) (*kafka.Producer, error) {
@@ -17,10 +22,10 @@ func NewProducer(cfg ProducerConfig) (*kafka.Producer, error) {
 
 // NewConsumer creates a new Kafka consumer instance.
 // It initializes the consumer with the provided configuration.	
-func NewConsumer(bootstrapServers, groupID string) (*kafka.Consumer, error) {
+func NewConsumer(cfg ConsumerConfig) (*kafka.Consumer, error) {
 	return kafka.NewConsumer(&kafka.ConfigMap{
-		"bootstrap.servers": bootstrapServers,
-		"group.id":          groupID,
+		"bootstrap.servers": cfg.BootstrapServers,
+		"group.id":          cfg.GroupID,
 		"auto.offset.reset": "earliest",
 	})
 }

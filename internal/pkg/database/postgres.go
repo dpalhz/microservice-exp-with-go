@@ -15,6 +15,8 @@ type Config struct {
 	DBName   string
 }
 
+// NewPostgresDB creates a new PostgreSQL database connection using the provided configuration.
+// It returns a pointer to gorm.DB and an error if any.	
 func NewPostgresDB(cfg Config) (*gorm.DB, error) {
 	dsn := fmt.Sprintf("host=%s user=%s password=%s dbname=%s port=%s sslmode=disable",
 		cfg.Host, cfg.User, cfg.Password, cfg.DBName, cfg.Port)

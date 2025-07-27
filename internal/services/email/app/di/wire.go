@@ -22,7 +22,6 @@ func InitializeApp(log *slog.Logger) (*app.App, func(), error) {
 		database.NewPostgresDB,
 		kafka.NewConsumer,
 		app.ProvideDBConfig,
-		app.ProvideKafkaConfig,
 		app.ProvideServerConfig,
 		app.ProvideDB,
 		app.ProvideConsumer,

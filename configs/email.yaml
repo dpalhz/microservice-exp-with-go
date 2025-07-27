@@ -1,6 +1,10 @@
+app:
+  port: "3001
+  
 kafka:
   brokers: "kafka:9092"
   topic: "user-events"
+  group_id: "email-verification-consumer"
 
 db:
   user: "admin"

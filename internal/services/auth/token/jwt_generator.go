@@ -23,7 +23,8 @@ type JWTGenerator struct {
 	publicKey   *rsa.PublicKey
 }
 
-// NewJWTGenerator memuat RSA key dari path dan inisialisasi JWTGenerator
+// NewJWTGenerator initializes a JWTGenerator with the provided configuration
+// It loads the private and public keys from the specified paths.
 func NewJWTGenerator(config JWTConfig) (*JWTGenerator, error) {
 	privKey, err := loadPrivateKey(config.PrivateKeyPath)
 	if err != nil {
@@ -58,7 +59,7 @@ func loadPublicKey(path string) (*rsa.PublicKey, error) {
 	return jwt.ParseRSAPublicKeyFromPEM(keyData)
 }
 
-// GenerateToken membuat JWT dengan RS256
+// GenerateTokens generates access and refresh tokens for a user
 func (j *JWTGenerator) GenerateTokens(userID uuid.UUID) (string, string, error) {
 	now := time.Now()
 
@@ -94,7 +95,7 @@ func (j *JWTGenerator) GenerateTokens(userID uuid.UUID) (string, string, error) 
 }
 
 
-// ValidateToken memverifikasi dan mengembalikan klaim JWT
+// ValidateToken validates a JWT token and returns the claims if valid
 func (j *JWTGenerator) ValidateToken(tokenStr string) (jwt.MapClaims, error) {
 	token, err := jwt.Parse(tokenStr, func(token *jwt.Token) (interface{}, error) {
 		if _, ok := token.Method.(*jwt.SigningMethodRSA); !ok {

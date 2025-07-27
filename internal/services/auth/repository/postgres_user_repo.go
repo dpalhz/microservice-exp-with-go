@@ -5,6 +5,7 @@ import (
 	"errors"
 
 	"github.com/dpalhz/microservice-exp-with-go/internal/services/auth/domain"
+	"github.com/google/uuid"
 
 	"gorm.io/gorm"
 )
