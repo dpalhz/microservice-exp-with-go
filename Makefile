@@ -2,8 +2,12 @@
 
 
 proto:
-	protoc --go_out=./gen/go --go_opt=paths=source_relative \
-	api/proto/event/v1/user_event.proto
+	@echo "Generating protobuf code..."
+	rm -rf gen/
+	mkdir -p gen/go/event/v1
+	protoc -I api --go_out=./gen/go --go_opt=paths=source_relative \
+	  --go-grpc_out=./gen/go --go-grpc_opt=paths=source_relative \
+	  api/proto/event/v1/email.proto
 
 wire:
 	cd internal/services/auth/app/di && wire

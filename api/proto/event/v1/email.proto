@@ -1,0 +1,22 @@
+syntax = "proto3";
+
+// Sesuaikan package name jika perlu
+package event.v1; 
+
+// PENTING: Ubah path ini agar sesuai dengan struktur direktori 'gen' Anda
+option go_package = "github.com/dpalhz/microservice-exp-with-go/gen/go/event/v1;eventv1";
+
+// Sisanya tetap sama
+service EmailService {
+  rpc SendVerificationEmail(SendVerificationEmailRequest) returns (SendVerificationEmailResponse) {}
+}
+
+message SendVerificationEmailRequest {
+  string user_id = 1;
+  string email = 2;
+  string code = 3;
+}
+
+message SendVerificationEmailResponse {
+  string status = 1;
+}
