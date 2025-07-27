@@ -9,19 +9,19 @@ import (
 	"gorm.io/gorm"
 )
 
-type PostgresVerificationRepository struct {
+type VerificationRepository struct {
 	db *gorm.DB
 }
 
-func NewPostgresVerificationRepository(db *gorm.DB) *PostgresVerificationRepository {
-	return &PostgresVerificationRepository{db: db}
+func NewVerificationRepository(db *gorm.DB) *VerificationRepository {
+	return &VerificationRepository{db: db}
 }
 
-func (r *PostgresVerificationRepository) Create(ctx context.Context, v *domain.VerificationCode) error {
+func (r *VerificationRepository) Create(ctx context.Context, v *domain.VerificationCode) error {
 	return r.db.WithContext(ctx).Create(v).Error
 }
 
-func (r *PostgresVerificationRepository) FindValid(ctx context.Context, userID uuid.UUID, purpose domain.VerificationPurpose, code string) (*domain.VerificationCode, error) {
+func (r *VerificationRepository) FindValid(ctx context.Context, userID uuid.UUID, purpose domain.VerificationPurpose, code string) (*domain.VerificationCode, error) {
 	var vc domain.VerificationCode
 	if err := r.db.WithContext(ctx).Where("user_id = ? AND purpose = ? AND code = ? AND status = ? AND expires_at > now()", userID, purpose, code, "UNUSED").First(&vc).Error; err != nil {
 		if errors.Is(err, gorm.ErrRecordNotFound) {
@@ -32,6 +32,6 @@ func (r *PostgresVerificationRepository) FindValid(ctx context.Context, userID u
 	return &vc, nil
 }
 
-func (r *PostgresVerificationRepository) Update(ctx context.Context, v *domain.VerificationCode) error {
+func (r *VerificationRepository) Update(ctx context.Context, v *domain.VerificationCode) error {
 	return r.db.WithContext(ctx).Save(v).Error
 }

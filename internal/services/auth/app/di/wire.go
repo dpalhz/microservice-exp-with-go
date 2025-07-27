@@ -21,10 +21,11 @@ import (
 
 func InitializeApp(log *slog.Logger) (*app.App, func(), error) {
 	wire.Build(
-		wire.Bind(new(usecase.UserRepository), new(*repository.PostgresUserRepository)),
 		wire.Bind(new(usecase.EventProducer), new(*event.KafkaEventProducer)),
 		wire.Bind(new(usecase.TokenGenerator), new(*token.JWTGenerator)),
 		wire.Bind(new(usecase.SessionStore), new(*session.RedisSessionStore)),
+		wire.Bind(new(usecase.UserRepository), new(*repository.UserRepository)),
+		wire.Bind(new(usecase.VerificationRepository), new(*repository.VerificationRepository)),
 
 		app.New,
 		app.ProvideDBConfig,
@@ -34,7 +35,8 @@ func InitializeApp(log *slog.Logger) (*app.App, func(), error) {
 		app.ProvideServerConfig,
 		handler.NewFiberHandler,
 		usecase.NewUserUsecase,
-		repository.NewPostgresUserRepository,
+		repository.NewUserRepository,
+		repository.NewVerificationRepository,
 		event.NewKafkaEventProducer,
 		token.NewJWTGenerator,
 		session.NewRedisSessionStore,
